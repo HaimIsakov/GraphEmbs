@@ -36,12 +36,13 @@ if opc==0:
 
 	# Generating synthetic data
 	data  =  Nets(name)
-	data.autoencoder.train()    
+	data.autoencoder._train()
 
 
 	# Visualizing graph embeddings
 	print("Visualizing graph embeddings...")
 	data.visualize_mssne()
+	print("Finish graph embeddings and visualizing")
 	#data.visualize_tsne()
 
 elif opc==1:
