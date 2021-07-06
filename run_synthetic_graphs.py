@@ -1,4 +1,7 @@
 import argparse
+
+import numpy as np
+
 from Nets import *
 from multi_scale import mssne_implem
 from scipy.cluster import hierarchy
@@ -46,24 +49,58 @@ if opc == 0:
 	print("Finish graph embeddings and visualizing")
 	#data.visualize_tsne()
 
-elif opc == 1:
+elif opc==1:
 
 	# Clustering graph embeddings in the embedding space
 	print("Clustering graph embeddings...")
 	nmi_list = []
-	for i in range(0, 10):
+	for i in range(0,10):
 
 		# Generate networks with different node permutations
-		data = Nets(name, i)
-		data.autoencoder._train()
-		embds = data.autoencoder.embs
-		ytdist = metrics.pairwise.euclidean_distances(embds)
-		Z = hierarchy.linkage(ytdist, 'single')
-		plt.figure()
-		dn = hierarchy.dendrogram(Z)
-		plt.show()
+		data  =  Nets(name,i)
+		data.autoencoder.train()
 		nmi_list.append(data.clustering())
 
 
-	print(str(round(np.mean(nmi_list),2))+" +/- "+str(round(np.std(nmi_list),2))) 
+	print(str(round(np.mean(nmi_list),2))+" +/- "+str(round(np.std(nmi_list),2)))
 
+
+elif opc == 2:
+	print("Hiererhial clustring of ATN")
+	data = Nets(name, 0)
+	data.autoencoder._train()
+	embds = data.autoencoder.embs
+	ytdist = np.exp(-1 * metrics.pairwise.euclidean_distances(embds))
+	Z = hierarchy.linkage(ytdist, 'single')
+	plt.figure()
+	dn = hierarchy.dendrogram(Z)
+	plt.title("single")
+	plt.show()
+
+	plt.clf()
+	Z = hierarchy.linkage(ytdist, 'complete')
+	plt.figure()
+	dn = hierarchy.dendrogram(Z)
+	plt.title("complete")
+	plt.show()
+
+	plt.clf()
+	Z = hierarchy.linkage(ytdist, 'average')
+	plt.figure()
+	dn = hierarchy.dendrogram(Z)
+	plt.title("average")
+	plt.show()
+
+	plt.clf()
+	Z = hierarchy.linkage(ytdist, 'weighted')
+	plt.figure()
+	dn = hierarchy.dendrogram(Z)
+	plt.title("weighted")
+	plt.show()
+
+	plt.clf()
+	Z = hierarchy.linkage(ytdist, 'centroid')
+	plt.figure()
+	dn = hierarchy.dendrogram(Z)
+	plt.title("centroid")
+	plt.show()
