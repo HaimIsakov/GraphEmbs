@@ -2,7 +2,8 @@
 from matplotlib import colors
 import networkx as nx
 import numpy as np 
-import copy 
+import copy
+import os
 import random
 import pandas as pd
 # from Autoencoder import *
@@ -13,6 +14,7 @@ from multi_scale import mssne_implem
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE, MDS
 from sklearn.cluster import SpectralClustering
+from airport_data.create_atn_graph import create_atn_network
 
 class Nets:
 	def __init__(self, name, seed=0):
@@ -44,7 +46,20 @@ class Nets:
 		elif name_net == "dynamic":
 			networks = self.load_dynamic()
 
+		elif name_net == "ATN":
+			networks = self.load_ATN()
+
 		return networks
+
+	def load_ATN(self):
+		nets = dict()
+		edges_file = os.path.join("airport_data", "network.csv")
+		nodes_file = os.path.join("airport_data", "airports.txt")
+		atn_networks = create_atn_network(nodes_file, edges_file)
+		for index, net in enumerate(atn_networks):
+			# the type doesnt really matter
+			nets[index] = {'network': net, 'type': 0}
+		return nets
 
 	def load_ER(self):
 		num_nets = 600
@@ -73,7 +88,7 @@ class Nets:
 				type = 2
 						
 			nets[index] = {'network': G, 'type': type}
-		return nets				
+		return nets
 
 	def load_Mixed(self):
 		num_nets = 600  # change below also, to 500
@@ -224,7 +239,7 @@ class Nets:
 		handles = [lp(i) for i in list(set(labels))]
 		plt.legend(labels=classes_names, loc=2)
 		plt.show()
-	
+
 	def visualize_mssne(self):
 		init = 'random'
 		print("Applying Multi-scale SNE")

@@ -1,7 +1,8 @@
 import argparse
 from Nets import *
 from multi_scale import mssne_implem
-
+from scipy.cluster import hierarchy
+from sklearn import metrics
 
 def tic():
 	# Homemade version of matlab tic and toc functions
@@ -54,7 +55,13 @@ elif opc == 1:
 
 		# Generate networks with different node permutations
 		data = Nets(name, i)
-		data.autoencoder.train()   
+		data.autoencoder._train()
+		embds = data.autoencoder.embs
+		ytdist = metrics.pairwise.euclidean_distances(embds)
+		Z = hierarchy.linkage(ytdist, 'single')
+		plt.figure()
+		dn = hierarchy.dendrogram(Z)
+		plt.show()
 		nmi_list.append(data.clustering())
 
 

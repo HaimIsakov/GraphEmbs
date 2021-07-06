@@ -9,8 +9,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
-class AutoencoderPytorch(nn.Module):
 
+class AutoencoderPytorch(nn.Module):
     def __init__(self, nets):
         super(AutoencoderPytorch, self).__init__()
         self.nb_epoch = 15
@@ -41,8 +41,8 @@ class AutoencoderPytorch(nn.Module):
         X = []
         for g in nets.keys():
             A = nx.adjacency_matrix(nets[g]['network'])
-            A = np.linalg.matrix_power(A.toarray(),power)
-
+            A = np.linalg.matrix_power(A.toarray(), power)
+            # print(A.shape)
             indices = np.triu_indices_from(A)
             X.append(A[indices])
         #X.append(A.toarray().flatten())
