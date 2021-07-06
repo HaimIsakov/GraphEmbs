@@ -4,10 +4,11 @@ from multi_scale import mssne_implem
 
 
 def tic():
-	#Homemade version of matlab tic and toc functions
+	# Homemade version of matlab tic and toc functions
 	import time
 	global startTime_for_tictoc
 	startTime_for_tictoc = time.time()
+
 
 def toc():
 	import time
@@ -26,18 +27,17 @@ def parse_args():
 
 # run run.py -f ER -opc 0  
 
-args  =  parse_args()
-name  =  args.f
-opc  =   int(args.opc)
+args = parse_args()
+name = args.f
+opc = int(args.opc)
 
-#-------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------
 
-if opc==0:
+if opc == 0:
 
 	# Generating synthetic data
-	data  =  Nets(name)
+	data = Nets(name)
 	data.autoencoder._train()
-
 
 	# Visualizing graph embeddings
 	print("Visualizing graph embeddings...")
@@ -45,15 +45,15 @@ if opc==0:
 	print("Finish graph embeddings and visualizing")
 	#data.visualize_tsne()
 
-elif opc==1:
+elif opc == 1:
 
 	# Clustering graph embeddings in the embedding space
 	print("Clustering graph embeddings...")
 	nmi_list = []
-	for i in range(0,10):
+	for i in range(0, 10):
 
 		# Generate networks with different node permutations
-		data  =  Nets(name,i)
+		data = Nets(name, i)
 		data.autoencoder.train()   
 		nmi_list.append(data.clustering())
 

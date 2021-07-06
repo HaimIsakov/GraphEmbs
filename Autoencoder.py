@@ -1,6 +1,7 @@
 from keras.models import Model
 from keras.layers import Dense, Input
-from keras.optimizers import Adam
+
+#from keras.optimizers import Adam
 from sklearn import preprocessing
 from sklearn import metrics
 from sklearn.metrics import accuracy_score
@@ -12,22 +13,20 @@ import numpy as np
 class Autoencoder:
 
 	def __init__(self,nets):
-		self.nb_epoch   =  15
-		self.batch_size =  128
-		self.h1_dim     =  800
-		self.lr         =  0.001
-		self.noise      =  0.05
-		self.X          =  self.triangular_adjacency_matrix(nets,3)
-		self.embs       =  0
-		self.sim_mat    =  0
-
+		self.nb_epoch = 15
+		self.batch_size = 128
+		self.h1_dim = 800
+		self.lr = 0.001
+		self.noise = 0.05
+		self.X = self.triangular_adjacency_matrix(nets,3)
+		self.embs = 0
+		self.sim_mat = 0
 
 	def similarity_matrix(self):
-		dist =  metrics.pairwise.euclidean_distances(self.embs)
+		dist = metrics.pairwise.euclidean_distances(self.embs)
 		dist_sc = (dist - dist.min())/(dist.max()-dist.min()) 
 		emb_sim = 1 - dist_sc						
 		return emb_sim		
-
 
 	def triangular_adjacency_matrix(self, nets, power=1):
 		
@@ -89,9 +88,9 @@ class Autoencoder:
 
 
 		autoencoder = Model(input_net, decoded)
-		adam = Adam(lr=self.lr) 
+		#adam = Adam(learning_rate=self.lr)
 		#autoencoder.compile(optimizer=adam, loss='binary_crossentropy'); print("*** Cross-Entropy loss... ****");
-		autoencoder.compile(optimizer=adam, loss='mean_squared_error'); print("*** Mean Square Error loss... ****");
+		autoencoder.compile(optimizer="adam", loss='mean_squared_error'); print("*** Mean Square Error loss... ****");
 
 		# Train
 		autoencoder.fit(x_train_noisy, x_train, epochs=self.nb_epoch, batch_size=self.batch_size, shuffle=True, verbose=1)
@@ -106,4 +105,3 @@ class Autoencoder:
 		self.embs     =  self.get_activations(autoencoder, layer, x_train)[0]
 		self.sim_mat  =  self.similarity_matrix()
 		print("\n")
-		
