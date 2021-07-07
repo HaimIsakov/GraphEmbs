@@ -112,19 +112,19 @@ class Nets:
 
 	def load_LFR(self):
 
-		num_nets = 1000
+		num_nets = 600
 
 		nets = dict()
 		for index, i in enumerate(range(1, num_nets + 1)):
 
-			if i <= 500:
+			if i <= 300:
 				edges = pd.read_csv('data/LFR/nets01/network'+str(i)+'.dat', sep='\t', header=None)
 				groups = pd.read_csv('data/LFR/nets01/community'+str(i)+'.dat', sep='\t', header=None)
 				type = 0
 			else:	
-				j = i % 500
+				j = i % 300
 				if j == 0:
-					j = 500
+					j = 300
 				edges = pd.read_csv('data/LFR/nets05/network'+str(j)+'.dat', sep='\t', header=None)
 				groups = pd.read_csv('data/LFR/nets05/community'+str(j)+'.dat', sep='\t', header=None)
 				type = 1
@@ -137,7 +137,7 @@ class Nets:
 
 			G = self.nodes_permutation(G)	
 			nets[index] = {'network': G, 'num_com': len(groups[1].unique()), 'type': type}
-		return nets	
+		return nets
 
 	def rewiring_edges(self, G,prob_rewiring, t):
 		num_edges = G.number_of_edges()
@@ -157,7 +157,6 @@ class Nets:
 		edges = edges[mask]
 		selected_edges = edges[0:edges_to_rewire]
 		G.add_edges_from(selected_edges)
-		
 		return G
 
 	def del_add_edges(self, G, prob_del, prob_add):

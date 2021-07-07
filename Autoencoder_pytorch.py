@@ -13,9 +13,9 @@ import torch.optim as optim
 class AutoencoderPytorch(nn.Module):
     def __init__(self, nets):
         super(AutoencoderPytorch, self).__init__()
-        self.nb_epoch = 15
+        self.nb_epoch = 15  # TODO: change back to epochs=15
         self.batch_size = 128
-        self.h1_dim = 800
+        self.h1_dim = 600 # TODO: change back to h1_dim=800
         self.lr = 0.001
         self.noise = 0.05
         self.X = self.triangular_adjacency_matrix(nets, 3)
@@ -39,8 +39,9 @@ class AutoencoderPytorch(nn.Module):
     @staticmethod
     def triangular_adjacency_matrix(nets, power=1):
         X = []
+        node_number = len(nets[0]['network'].nodes)
         for g in nets.keys():
-            A = nx.adjacency_matrix(nets[g]['network'])
+            A = nx.adjacency_matrix(nets[g]['network'], nodelist=range(0, node_number))
             A = np.linalg.matrix_power(A.toarray(), power)
             # print(A.shape)
             indices = np.triu_indices_from(A)
@@ -60,11 +61,11 @@ class AutoencoderPytorch(nn.Module):
         return optim.Adam(self.parameters(), lr=self.lr)
 
     def encoder(self, data):
-        data = F.tanh(self.encoder_layer(data))
+        data = torch.tanh(self.encoder_layer(data))
         return data
 
     def decoder(self, data):
-        data = F.sigmoid(self.decoder_layer(data))
+        data = torch.sigmoid(self.decoder_layer(data))
         return data
 
     def _train(self):
@@ -92,6 +93,7 @@ class AutoencoderPytorch(nn.Module):
             net_out = self(x_train_noisy)
             loss = loss_fn(net_out, x_train)
             loss.backward()
+            print("loss:", loss.item())
             optimizer.step()
 
         self.embs = self.encoder(x_train).detach().numpy()
