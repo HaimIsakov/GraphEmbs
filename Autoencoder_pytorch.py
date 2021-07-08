@@ -15,7 +15,7 @@ class AutoencoderPytorch(nn.Module):
         super(AutoencoderPytorch, self).__init__()
         self.nb_epoch = 15  # TODO: change back to epochs=15
         self.batch_size = 128
-        self.h1_dim = 600 # TODO: change back to h1_dim=800
+        self.h1_dim = 800 # TODO: change back to h1_dim=800
         self.lr = 0.001
         self.noise = 0.05
         self.X = self.triangular_adjacency_matrix(nets, 3)

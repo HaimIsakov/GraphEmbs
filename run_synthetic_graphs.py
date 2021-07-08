@@ -59,8 +59,8 @@ if opc == 0:
 
 	# Generating synthetic data
 	data = Nets(name)
-	data.autoencoder._train()
-
+	# data.autoencoder._train()
+	data.autoencoder.train()
 	# Visualizing graph embeddings
 	print("Visualizing graph embeddings...")
 	data.visualize_mssne()
@@ -75,8 +75,9 @@ elif opc==1:
 	for i in range(0, 10):
 
 		# Generate networks with different node permutations
-		data = Nets(name, seed=None)
-		data.autoencoder._train()
+		data = Nets(name, seed=i)
+		# data.autoencoder._train()
+		data.autoencoder.train()
 		nmi_list.append(data.clustering())
 
 	print(str(round(np.mean(nmi_list),2))+" +/- "+str(round(np.std(nmi_list),2)))
@@ -85,7 +86,8 @@ elif opc==1:
 elif opc == 2:
 	print("Hiererhial clustring of ATN")
 	data = Nets(name, 0)
-	data.autoencoder._train()
+	# data.autoencoder._train()
+	data.autoencoder.train()
 	embds = data.autoencoder.embs
 	# sim_mat = data.autoencoder.sim_mat
 	# ytdist = np.exp(-1 * metrics.pairwise.euclidean_distances(embds))
@@ -132,3 +134,7 @@ elif opc == 2:
 	plt.title("centroid")
 	plt.tight_layout()
 	plt.show()
+
+elif opc == 3:
+	print("Microbiom Graphs Classification:")
+

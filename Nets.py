@@ -6,7 +6,7 @@ import copy
 import os
 import random
 import pandas as pd
-# from Autoencoder import *
+from Autoencoder import *
 # from bokeh.palettes import mpl
 from sklearn import metrics
 from Autoencoder_pytorch import AutoencoderPytorch
@@ -15,14 +15,16 @@ import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE, MDS
 from sklearn.cluster import SpectralClustering
 from airport_data.create_atn_graph import create_atn_network
+from gdm_dataset import GDMDataset
+
 
 class Nets:
 	def __init__(self, name, seed=0):
 		self.seed = seed
 		self.nets = self.choose_net(name)
 		self.labels = self.get_nets_labels(self.nets, 'type')
-		# self.autoencoder = Autoencoder(self.nets)
-		self.autoencoder = AutoencoderPytorch(self.nets)
+		self.autoencoder = Autoencoder(self.nets)
+		# self.autoencoder = AutoencoderPytorch(self.nets)
 
 	def set_seed(self, val):
 		self.seed = val	
@@ -49,7 +51,26 @@ class Nets:
 		elif name_net == "ATN":
 			networks = self.load_ATN()
 
+		elif name_net == "microbiome":
+			networks = self.load_microbiome()
 		return networks
+
+	def load_microbiome(self):
+		nets = {}
+		def create_dataset(data_file_path, tag_file_path, mission, category):
+			gdm_dataset = GDMDataset(data_file_path, tag_file_path, mission, category)
+			return gdm_dataset
+
+		data_file_path = "OTU_merged_Mucositis_Genus_after_mipmlp_eps_1.csv"
+		tag_file_path = "tag_gdm_file.csv"
+		mission = "graph structure"
+		gdm_dataset = create_dataset(data_file_path, tag_file_path, mission, "symmetric_adjacency")
+
+		graph_list = gdm_dataset.graphs_list
+
+		for index, net in enumerate(graph_list):
+			nets[index] = {'network': net, 'type': gdm_dataset.labels[index]}
+		return nets
 
 	def load_ATN(self):
 		nets = dict()
