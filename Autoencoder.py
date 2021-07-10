@@ -15,7 +15,7 @@ class Autoencoder:
     def __init__(self, nets):
         self.nb_epoch = 15
         self.batch_size = 128
-        self.h1_dim = 10000
+        self.h1_dim = 800
         self.lr = 0.001
         self.noise = 0.05
         self.X = self.triangular_adjacency_matrix(nets, 3)
@@ -29,10 +29,11 @@ class Autoencoder:
         return emb_sim
 
     def triangular_adjacency_matrix(self, nets, power=1):
-
+        node_number = len(nets[0]['network'].nodes)
         X = []
         for g in nets.keys():
-            A = nx.adjacency_matrix(nets[g]['network'])
+            #A = nx.adjacency_matrix(nets[g]['network'])
+            A = nx.adjacency_matrix(nets[g]['network'], nodelist=range(0, node_number))
             A = np.linalg.matrix_power(A.toarray(), power)
 
             indices = np.triu_indices_from(A)
