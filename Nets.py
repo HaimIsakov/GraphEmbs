@@ -93,7 +93,7 @@ class Nets:
 		nets = dict()
 		for index in range(0, num_nets):
 			
-			self.set_seed(index)
+			# self.set_seed(index)
 
 			if index < 200:
 				net = copy.deepcopy(G1) 
@@ -133,31 +133,33 @@ class Nets:
 
 	def load_LFR(self):
 
-		num_nets = 600
+		num_nets = 1000
 
 		nets = dict()
 		for index, i in enumerate(range(1, num_nets + 1)):
 
-			if i <= 300:
-				edges = pd.read_csv('data/LFR/nets01/network'+str(i)+'.dat', sep='\t', header=None)
-				groups = pd.read_csv('data/LFR/nets01/community'+str(i)+'.dat', sep='\t', header=None)
+			if i <= 500:
+
+				edges = pd.read_csv('data/LFR/nets01/network' + str(i) + '.dat', sep='\t', header=None)
+				groups = pd.read_csv('data/LFR/nets01/community' + str(i) + '.dat', sep='\t', header=None)
 				type = 0
-			else:	
-				j = i % 300
+			else:
+				j = i % 500
 				if j == 0:
-					j = 300
-				edges = pd.read_csv('data/LFR/nets05/network'+str(j)+'.dat', sep='\t', header=None)
-				groups = pd.read_csv('data/LFR/nets05/community'+str(j)+'.dat', sep='\t', header=None)
+					j = 500
+				edges = pd.read_csv('data/LFR/nets05/network' + str(j) + '.dat', sep='\t', header=None)
+				groups = pd.read_csv('data/LFR/nets05/community' + str(j) + '.dat', sep='\t', header=None)
 				type = 1
 
 			G = nx.from_edgelist(edges.values)
 			mapping = dict(zip(groups[0].values, groups[1].values))
 
-			nx.set_node_attributes(G, mapping, 'group')		
+			nx.set_node_attributes(G, mapping, 'group')
 			G = nx.convert_node_labels_to_integers(G, first_label=0)
 
-			G = self.nodes_permutation(G)	
+			G = self.nodes_permutation(G)
 			nets[index] = {'network': G, 'num_com': len(groups[1].unique()), 'type': type}
+
 		return nets
 
 	def rewiring_edges(self, G,prob_rewiring, t):

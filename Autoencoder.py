@@ -29,11 +29,11 @@ class Autoencoder:
         return emb_sim
 
     def triangular_adjacency_matrix(self, nets, power=1):
-        node_number = len(nets[0]['network'].nodes)
+        # node_number = len(nets[0]['network'].nodes)
         X = []
         for g in nets.keys():
-            #A = nx.adjacency_matrix(nets[g]['network'])
-            A = nx.adjacency_matrix(nets[g]['network'], nodelist=range(0, node_number))
+            A = nx.adjacency_matrix(nets[g]['network'])
+            # A = nx.adjacency_matrix(nets[g]['network'], nodelist=range(0, node_number))
             A = np.linalg.matrix_power(A.toarray(), power)
 
             indices = np.triu_indices_from(A)
@@ -41,7 +41,6 @@ class Autoencoder:
         # X.append(A.toarray().flatten())
 
         X = np.array(X)
-
         return X
 
     def get_noise(self, data, p):

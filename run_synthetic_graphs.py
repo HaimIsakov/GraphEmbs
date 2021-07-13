@@ -134,7 +134,3 @@ elif opc == 2:
 	plt.title("centroid")
 	plt.tight_layout()
 	plt.show()
-
-elif opc == 3:
-	print("Microbiom Graphs Classification:")
-
